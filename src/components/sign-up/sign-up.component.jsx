@@ -3,13 +3,14 @@ import React from 'react';
 import './sign-up.styles.scss';
 import FormInput from './../form-input/form-input';
 import CustomButton from './../custom-button/custom-button.component';
+import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
 
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      name: '',
+      displayName: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -21,40 +22,71 @@ class SignUp extends React.Component {
 
     this.setState({ [name]: value });
   };
-  handleSubmit;
+
+  handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const { displayName, email, password, confirmPassword } = this.state;
+    if (password !== confirmPassword) {
+      alert('passwords dont match');
+      return;
+    }
+
+    try {
+      const { user } = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+
+      await createUserProfileDocument(user, { displayName });
+      this.setState({
+        displayName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   render() {
+    const { displayName, email, password, confirmPassword } = this.state;
     return (
-      <div>
+      <div className="sign-up">
         <h2>I do not have an account</h2>
         <span>Sing up with email and password</span>
-        <form>
+        <form className="sign-up-form" onSubmit={this.handleSubmit}>
           <FormInput
-            name="name"
+            name="displayName"
             label="Display Name"
             type="text"
-            value={this.state.name}
+            value={displayName}
+            onChange={this.handleChange}
             required
           />
           <FormInput
             name="email"
             label="Email"
             type="email"
-            value={this.state.email}
+            value={email}
+            onChange={this.handleChange}
             required
           />
           <FormInput
             name="password"
             label="Password"
             type="password"
-            value={this.state.password}
+            value={password}
+            onChange={this.handleChange}
             required
           />
           <FormInput
             name="confirmPassword"
             label="Confirm Password"
             type="password"
-            value={this.state.confirmPassword}
+            value={confirmPassword}
+            onChange={this.handleChange}
             required
           />
 

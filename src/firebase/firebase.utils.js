@@ -43,6 +43,41 @@ export const createUserProfileDocument = async (
   return userRef;
 };
 
+export const addCollectionsAndDocument = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = firestore.collection(collectionKey);
+
+  const batch = firestore.batch();
+
+  objectsToAdd.forEach((obj) => {
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj);
+  });
+
+  return await batch.commit();
+};
+
+export const convertCollectionsToMap = (collections) => {
+  const transformedColletions = collections.docs.map((collection) => {
+    const { title, items } = collection.data();
+
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: collection.id,
+      title,
+      items,
+    };
+  });
+
+  return transformedColletions.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+  //console.log(transformedColletions);
+};
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 

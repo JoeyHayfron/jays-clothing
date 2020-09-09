@@ -30,9 +30,8 @@ class App extends React.Component {
             () => console.log(this.state)
           );
         });
-      } else {
-        this.props.setCurrentUser(userAuth);
       }
+      this.props.setCurrentUser(userAuth);
     });
   }
 

@@ -16,3 +16,7 @@ export const reduceItem = (item) => ({
   type: 'REDUCE_ITEM',
   payload: item,
 });
+
+export const clearCart = () => ({
+  type: 'CLEAR_CART',
+});

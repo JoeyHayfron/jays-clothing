@@ -44,7 +44,7 @@ class SignUp extends React.Component {
         <form className="sign-up-form" onSubmit={this.handleSubmit}>
           <FormInput
             name="displayName"
-            label="Display Name"
+            label="Display name"
             type="text"
             value={displayName}
             onChange={this.handleChange}
